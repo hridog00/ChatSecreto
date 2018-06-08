@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import socket
+import PyQt5
 
 
 TCP_IP = '192.168.1.136'
