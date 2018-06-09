@@ -32,6 +32,10 @@ def inicioSesion(request):
     else:
         return render(request, 'profile.html')
 
+def message(request):
+
+    return render(request, 'messages.html')
+
 class DefaultFormView(FormView):
     template_name = 'proyecto/form.html'
     form_class = ContactForm
