@@ -1,7 +1,13 @@
-from django.conf.urls import url
-
-from . import views
+from django.conf.urls import url, include
+from django.contrib.auth.views import login
+import views
 
 urlpatterns = [
+
     url(r'^$', views.index, name='index'),
+    url(r'^inicioSesion$', views.inicioSesion, name='inicioSesion'),
+
+    # url(r'^accounts/login$', 'django.contrib.auth.views.login'),
+    url(r'^form$', views.DefaultFormView.as_view(), name='form_default'),
+
 ]
