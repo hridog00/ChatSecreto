@@ -12,8 +12,10 @@ from django.db.models.fields.files import FieldFile
 from django.views.generic import FormView
 from django.views.generic.base import TemplateView
 from django.contrib import messages
+from django.template import loader
 
 from .forms import ContactForm, FilesForm, ContactFormSet
+from .models import Post
 
 
 def index(request):
@@ -27,14 +29,20 @@ def inicioSesion(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-        return render(request, 'proyecto/perfil.html')
+
+        latest_question_list = Post.objects.order_by('-pub_date')[:5]
+        template = loader.get_template('polls/index.html')
+        context = {
+            'latest_question_list': latest_question_list,
+        }
+        return HttpResponse(template.render(context, request))
 
     else:
         return render(request, 'profile.html')
 
 def message(request):
 
-    return render(request, 'messages.html')
+    return render(request, 'proyecto/messages.html')
 
 class DefaultFormView(FormView):
     template_name = 'proyecto/form.html'
