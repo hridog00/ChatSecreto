@@ -20,7 +20,8 @@ class User(models.Model):
 
 class Post(models.Model):
     texto = models.CharField(max_length=2000)
-    date = models.DateField
+    date = models.DateTimeField()
+    titulo = models.CharField(max_length= 50)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

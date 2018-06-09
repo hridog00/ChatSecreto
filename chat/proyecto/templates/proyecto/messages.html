@@ -10,15 +10,15 @@
 #Add
 {% block content %}
 
-<div class="card" style ="background-color:rgba(177,174,174,1.0);">
+<div class="card">
     <div class="row">
         <div class="col-md-6 col-md-offset-3" id="form_container">
-            <form role="form" method="post" id="reused_form">
+            <form role="form" method="post" id="reused_form" action="sendMessage" >   {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-6 form-group">
                         <label for="name">
                             Titulo:</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
+                        <input type="text" class="form-control" id="name" name="titulo" required>
                     </div>
                 </div>
 

@@ -15,8 +15,9 @@ from django.contrib import messages
 from django.template import loader
 
 from .forms import ContactForm, FilesForm, ContactFormSet
-from .models import Post
-
+from .models import Post, User
+import datetime
+usuario = None
 
 def index(request):
 
@@ -29,9 +30,10 @@ def inicioSesion(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-
-        latest_question_list = Post.objects.order_by('-pub_date')[:5]
-        template = loader.get_template('polls/index.html')
+        global usuario
+        usuario = User.objects.get(username=username)
+        latest_question_list = Post.objects.filter(usuario=usuario)
+        template = loader.get_template('proyecto/perfil.html')
         context = {
             'latest_question_list': latest_question_list,
         }
@@ -41,9 +43,22 @@ def inicioSesion(request):
         return render(request, 'profile.html')
 
 def message(request):
-
     return render(request, 'proyecto/messages.html')
 
 class DefaultFormView(FormView):
     template_name = 'proyecto/form.html'
     form_class = ContactForm
+
+def enviarMensaje(request):
+    titulo = request.POST['titulo']
+    texto = request.POST['message']
+
+    global usuario
+    m = Post(texto=texto, titulo=titulo,usuario = usuario, date = datetime.datetime.now())
+    m.save()
+    latest_question_list = Post.objects.order_by('date')[:5]
+    template = loader.get_template('proyecto/perfil.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
