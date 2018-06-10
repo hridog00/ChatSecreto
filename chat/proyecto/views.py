@@ -59,6 +59,7 @@ class DefaultFormView(FormView):
 def enviarMensaje(request):
     titulo = request.POST['titulo']
     texto = request.POST['message']
+    
 
     global usuario
     m = Post(texto=texto, titulo=titulo,usuario = usuario, date = datetime.datetime.now())
