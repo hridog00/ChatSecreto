@@ -1,7 +1,6 @@
 # -*- coding: cp1252 -*-
 # -*- coding: 850 -*-
 # -*- coding: utf-8 -*-
-
 from random import randrange
 
 import binary as binary
@@ -113,6 +112,19 @@ def pasarNumerico(msg, alf):
         resultado.append(alf.find(i))
     return resultado
 
+def getBloquesCifrar(k, C):
+    print(len(C))
+    result = []
+    i = 0
+    while i < len(C):
+        aux = []
+        for j in range(0, k):
+            aux.append(C[i + j])
+
+        i = i + k
+        print (aux)
+        result.append(aux)
+    return result
 
 def getBloques(k, C):
     result = []
@@ -140,7 +152,20 @@ def getC(bloque, k, N):
 
 
     return c
+def getCCifrar(bloque, k, N):
+    print (bloque)
+    c = require("big-integer")
+    c = 0
+    exp = k-1
+    for i in range(0, k):
+        print(exp)
+        a = require("big-integer")
+        a = (N ** exp)
+        c = c + bloque[i] * a
+        exp = exp - 1
 
+
+    return c
 
 def devolerLetras(alf, m):
     msg = ""
@@ -148,30 +173,41 @@ def devolerLetras(alf, m):
         msg = msg + alf[i]
     return msg
 
-def rand_prime():
-    while True:
-        p = randrange(10001, 100000, 2)
-        if all(p % n != 0 for n in range(3, int((p ** 0.5) + 1), 2)):
-            return p
-def generarClavePublica():
-    p = rand_prime()
-    q= rand_prime()
-    n = p*q
-    phi = (p-1)*(q-1)
-    e = (randrange(0, phi))
-    clave = []
-    clave.append(n)
-    clave.append(e)
-    clave.append(phi)
-
-    return clave
 
 def encriptar(texto, n, e):
+    alf = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZáéíóúÁÉÍÓÚ0123456789 ,.:;-¿?()"
 
-    return
+    #n=731
+    #e=269
+    N = len(alf)
+    print (len(texto))
+    k = getK(n, N)
+    while(len(texto)%k!=0):
+        text = texto + " "
+    M = pasarNumerico(texto, alf)
+    C = getBloquesCifrar(k, M)
+    print (C)
+    res = ""
+    for i in C:
+        c = getCCifrar(i, k, N)
+        print ('c:', c)
+        m = algoritmoPotenciacionMoular(c, e, n)
+        print ('m:', m)
+        numeros = calcularExpresionBase(N, m, n)
+        while(len(numeros)<k+1):
+            numeros = [0] + numeros
+        print ('numeros:')
+        print (numeros)
+        msg = devolerLetras(alf, numeros)
+        #   print (msg)
+        res = res + msg
+    print (res)
+    return res
 
 def desencriptar(msg,n,e,phi):
     alf = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZáéíóúÁÉÍÓÚ0123456789 ,.:;-¿?()"
+  #  alf = "ABCDEFGHIJKLMNNOPQRSTUVWXYZ"
+
     N = len(alf)
     M = pasarNumerico(msg, alf)
     k = getK(n, N)
@@ -191,3 +227,24 @@ def desencriptar(msg,n,e,phi):
         res = res + msg
 
     return res
+def rand_prime():
+    while True:
+        p = randrange(10001, 100000, 2)
+        if all(p % n != 0 for n in range(3, int((p ** 0.5) + 1), 2)):
+            return p
+def generarClavePublica():
+    p = rand_prime()
+    q= rand_prime()
+    n = p*q
+    phi = (p-1)*(q-1)
+    e = (randrange(0, phi))
+    clave = []
+    clave.append(n)
+    clave.append(e)
+    clave.append(phi)
+
+    return clave
+
+
+
+

@@ -1,3 +1,5 @@
+# -*- coding: cp1252 -*-
+# -*- coding: 850 -*-
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
@@ -66,7 +68,7 @@ def enviarMensaje(request):
     texto = request.POST['message']
     global usuario
     mensaje = rsa.encriptar(texto, usuario.clavepublica_d, usuario.clavepublica_e)
-    m = Post(texto=texto, titulo=titulo, usuario=usuario, date=datetime.datetime.now())
+    m = Post(texto=mensaje, titulo=titulo, usuario=usuario, date=datetime.datetime.now())
     m.save()
     latest_question_list = Post.objects.filter(usuario=usuario)
     template = loader.get_template('proyecto/perfil.html')
@@ -82,7 +84,9 @@ def signup(request):
 
 def descifrar(request, id):
     post = Post.objects.get(id=id)
-    string = "El texto desencriptado es: \n" + post.texto
+    global usuario
+    text = rsa.desencriptar(post,usuario.clavepublica_d,usuario.clavepublica_e, usuario.phi )
+    string = "El texto desencriptado es: \n" + text
     messages.info(request, string, )
     latest_question_list = Post.objects.filter(usuario=usuario)
     template = loader.get_template('proyecto/perfil.html')
