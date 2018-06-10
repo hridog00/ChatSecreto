@@ -175,15 +175,20 @@ def devolerLetras(alf, m):
 
 
 def encriptar(texto, n, e):
-    alf = "abcdefghijklmnÒopqrstuvwxyzABCDEFGHIJKLMN—OPQRSTUVWXYZ·ÈÌÛ˙¡…Õ”⁄0123456789 ,.:;-ø?()"
+    alf = 'abcdefghijklmnÒopqrstuvwxyzABCDEFGHIJKLMN—OPQRSTUVWXYZ·ÈÌÛ˙¡…Õ”⁄0123456789 ,.:;-ø?()'
 
     #n=731
     #e=269
     N = len(alf)
     print (len(texto))
     k = getK(n, N)
-    while(len(texto)%k!=0):
-        text = texto + " "
+    print (len(texto), k)
+
+    while((len(texto)%k)!= 0):
+        print (len(texto))
+        texto = texto + " "
+    print (len(texto))
+
     M = pasarNumerico(texto, alf)
     C = getBloquesCifrar(k, M)
     print (C)
