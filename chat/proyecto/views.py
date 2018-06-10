@@ -24,6 +24,8 @@ import datetime
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 
+from django.core.mail import send_mail
+
 usuario = None
 
 
@@ -105,4 +107,11 @@ def registro(request):
     us.set_password(password)
     us.save()
 
+    #email_sender = 'helenaridocci@gmail.com'
+
+    #send_mail('Claves','La clave publica es:' + '\n'+  'La clave privada es:',email_sender,[email],fail_silently=False,)
+
+    text_claves = 'Tu claves publicas son \n' + 'n:' + str(claves[0]) + '\ne:' + str(claves[1])
+
+    messages.info(request, text_claves)
     return HttpResponse(render(request, 'profile.html'))
