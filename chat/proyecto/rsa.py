@@ -1,3 +1,7 @@
+# -*- coding: cp1252 -*-
+# -*- coding: 850 -*-
+# -*- coding: utf-8 -*-
+
 from random import randrange
 
 import binary as binary
@@ -162,12 +166,12 @@ def generarClavePublica():
 
     return clave
 
-def encriptar():
+def encriptar(texto, n, e):
 
     return
 
 def desencriptar(msg,n,e,phi):
-    alf = "abcdefghijklmn√±opqrstuvwxyzABCDEFGHIJKLMN√ëOPQRSTUVWXYZ√°√©√≠√≥√∫√Å√â√ç√ì√ö0123456789 ,.:;-¬ø?()"
+    alf = "abcdefghijklmnÒopqrstuvwxyzABCDEFGHIJKLMN—OPQRSTUVWXYZ·ÈÌÛ˙¡…Õ”⁄0123456789 ,.:;-ø?()"
     N = len(alf)
     M = pasarNumerico(msg, alf)
     k = getK(n, N)

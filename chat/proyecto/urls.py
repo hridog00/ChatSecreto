@@ -1,5 +1,7 @@
 from django.conf.urls import url, include
 from django.contrib.auth.views import login
+
+
 import views
 
 urlpatterns = [
@@ -11,6 +13,8 @@ urlpatterns = [
     # url(r'^accounts/login$', 'django.contrib.auth.views.login'),
     url(r'^form$', views.DefaultFormView.as_view(), name='form_default'),
     url(r'^message', views.message, name='escribe_mensajet'),
+    url(r'^descifrar/(?P<id>\d+)/$', views.descifrar ,name="perfilnMessge"),
+
     url(r'^signup/$', views.signup, name='signup'),
 
 ]

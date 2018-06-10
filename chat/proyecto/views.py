@@ -14,6 +14,7 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.template import loader
 
+import rsa
 from .forms import ContactForm, FilesForm, ContactFormSet, SignUpForm
 from .models import Post, User
 import datetime
@@ -59,12 +60,11 @@ class DefaultFormView(FormView):
 def enviarMensaje(request):
     titulo = request.POST['titulo']
     texto = request.POST['message']
-    
-
     global usuario
+    mensaje = rsa.encriptar(texto, usuario.clavepublica_d, usuario.clavepublica_e)
     m = Post(texto=texto, titulo=titulo,usuario = usuario, date = datetime.datetime.now())
     m.save()
-    latest_question_list = Post.objects.order_by('date')[:5]
+    latest_question_list = Post.objects.filter(usuario=usuario)
     template = loader.get_template('proyecto/perfil.html')
     context = {
         'latest_question_list': latest_question_list,
@@ -84,3 +84,14 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'proyecto/signup.html', {'form': form})
+
+def descifrar(request, id):
+    post = Post.objects.get(id=id)
+    string = "El texto desencriptado es: \n"+post.texto
+    messages.info(request, string,)
+    latest_question_list = Post.objects.filter(usuario=usuario)
+    template = loader.get_template('proyecto/perfil.html')
+    context = {
+        'latest_question_list': latest_question_list,
+    }
+    return HttpResponse(template.render(context, request))
