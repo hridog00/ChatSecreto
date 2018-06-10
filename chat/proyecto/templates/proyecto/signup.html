@@ -6,10 +6,19 @@ Registrate
 {% block content %}
 
   <form method="post" action="registrarse">
-    {% csrf_token %}
 
+    <div class="container" style="...">
 
-    {% endfor %}
-    <button type="submit">Sign up</button>
+      <form class="form-signup" method="post" id="login-form" action="{%url 'signup'%}">{% csrf_token %}
+          <h2 class="form-signup-heading"></h2>
+          <label for="id_username" class="sr-only" > </label>
+          <input type="text" name="new_username" id="id_username" class="form-control" placeholder=" User Name" required autofocus>
+          <label for="id_correo" class="sr-only" > </label>
+          <input type="email" name="new_email" id="id_correo" class="form-control" placeholder=" Email" required>
+          <label for="id_password" class="sr-only">Password</label>
+          <input type="password" name="new_password" id="id_password" class="form-control" placeholder=" Password" required>
+      </form>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign up</button>
   </form>
 {% endblock %}
