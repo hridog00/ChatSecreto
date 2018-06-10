@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django import contrib
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render
 
@@ -13,7 +14,8 @@ from django.views.generic import FormView
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.template import loader
-
+from requests import auth
+from django.contrib.auth.models import User as Us
 import rsa
 from .forms import ContactForm, FilesForm, ContactFormSet, SignUpForm
 from .models import Post, User
@@ -22,13 +24,10 @@ import datetime
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 
-
-
-
 usuario = None
 
-def index(request):
 
+def index(request):
     return render(request, 'profile.html')
 
 
@@ -50,19 +49,22 @@ def inicioSesion(request):
     else:
         return render(request, 'profile.html')
 
+
 def message(request):
     return render(request, 'proyecto/messages.html')
+
 
 class DefaultFormView(FormView):
     template_name = 'proyecto/form.html'
     form_class = ContactForm
+
 
 def enviarMensaje(request):
     titulo = request.POST['titulo']
     texto = request.POST['message']
     global usuario
     mensaje = rsa.encriptar(texto, usuario.clavepublica_d, usuario.clavepublica_e)
-    m = Post(texto=texto, titulo=titulo,usuario = usuario, date = datetime.datetime.now())
+    m = Post(texto=texto, titulo=titulo, usuario=usuario, date=datetime.datetime.now())
     m.save()
     latest_question_list = Post.objects.filter(usuario=usuario)
     template = loader.get_template('proyecto/perfil.html')
@@ -71,27 +73,36 @@ def enviarMensaje(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = SignUpForm()
-    return render(request, 'proyecto/signup.html', {'form': form})
+    return render(request, 'proyecto/signup.html')
+
 
 def descifrar(request, id):
     post = Post.objects.get(id=id)
-    string = "El texto desencriptado es: \n"+post.texto
-    messages.info(request, string,)
+    string = "El texto desencriptado es: \n" + post.texto
+    messages.info(request, string, )
     latest_question_list = Post.objects.filter(usuario=usuario)
     template = loader.get_template('proyecto/perfil.html')
     context = {
         'latest_question_list': latest_question_list,
     }
     return HttpResponse(template.render(context, request))
+
+
+def registro(request):
+    username = request.POST['new_username']
+    password = request.POST['new_password']
+    email = request.POST['new_email']
+
+    claves = rsa.generarClavePublica()
+
+    u = User(username=username, password=password, email=email, clavepublica_d=claves[0], clavepublica_e=claves[1],
+             phi=claves[2])
+    u.save()
+
+    us =  Us.objects.create_user(username, email, password)
+    us.set_password(password)
+    us.save()
+
+    return HttpResponse(render(request, 'profile.html'))
