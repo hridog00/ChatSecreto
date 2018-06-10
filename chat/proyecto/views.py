@@ -14,9 +14,16 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.template import loader
 
-from .forms import ContactForm, FilesForm, ContactFormSet
+from .forms import ContactForm, FilesForm, ContactFormSet, SignUpForm
 from .models import Post, User
 import datetime
+
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
+
+
+
+
 usuario = None
 
 def index(request):
@@ -62,3 +69,17 @@ def enviarMensaje(request):
         'latest_question_list': latest_question_list,
     }
     return HttpResponse(template.render(context, request))
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
