@@ -11,6 +11,6 @@ urlpatterns = [
     # url(r'^accounts/login$', 'django.contrib.auth.views.login'),
     url(r'^form$', views.DefaultFormView.as_view(), name='form_default'),
     url(r'^message', views.message, name='escribe_mensajet'),
-
+    url(r'^signup/$', views.signup, name='signup'),
 
 ]

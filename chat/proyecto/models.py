@@ -16,6 +16,7 @@ class User(models.Model):
         clavepublica_d = models.BigIntegerField()
         clavepublica_e = models.BigIntegerField()
         phi =  models.BigIntegerField()
+        email = models.EmailField()
 
 
 class Post(models.Model):

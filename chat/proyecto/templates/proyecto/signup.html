@@ -1,0 +1,15 @@
+{% extends 'proyecto/base.html' %}
+
+{% block title %}
+Registrate
+{% endblock %}
+{% block content %}
+
+  <form method="post" action="registrarse">
+    {% csrf_token %}
+
+
+    {% endfor %}
+    <button type="submit">Sign up</button>
+  </form>
+{% endblock %}
